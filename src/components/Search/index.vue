@@ -3,28 +3,19 @@
     <div class="search_input">
         <div class="search_input_wrapper">
             <i class="iconfont icon-sousuo"></i>
-            <input type="text">
+            <input type="text" v-model="message">
         </div>
     </div>
     <div class="search_result">
         <h3>电影/电视剧/综艺</h3>
         <ul>
-            <li>
-                <div class="img"><img src="images/movie_1.jpg"></div>
+            <li v-for="data in movieList" :key="data.id">
+                <div class="img"><img :src="data.img | setWH('128.180')"></div>
                 <div class="info">
-                    <p><span>无名之辈</span><span>8.5</span></p>
-                    <p>A Cool Fish</p>
-                    <p>剧情,喜剧,犯罪</p>
-                    <p>2018-11-16</p>
-                </div>
-            </li>
-            <li>
-                <div class="img"><img src="images/movie_1.jpg"></div>
-                <div class="info">
-                    <p><span>无名之辈</span><span>8.5</span></p>
-                    <p>A Cool Fish</p>
-                    <p>剧情,喜剧,犯罪</p>
-                    <p>2018-11-16</p>
+                    <p><span>{{data.nm}}</span><span>{{data.sc}}</span></p>
+                    <p>{{data.enm}}</p>
+                    <p>{{data.cat}}</p>
+                    <p>{{data.rt}}</p>
                 </div>
             </li>
         </ul>
@@ -33,8 +24,51 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
+Vue.filter('setWH', (url, arg) => {
+  return url.replace(/w\.h/, arg)
+})
+
 export default {
-  name: 'Search'
+  name: 'Search',
+  data () {
+    return {
+      message: '',
+      movieList: []
+    }
+  },
+  methods: {
+    cancelRequest () {
+      if (typeof this.source === 'function') {
+        this.source('终止请求')
+      }
+    }
+  },
+  watch: {
+    message (newVal) {
+      const that = this
+      this.cancelRequest()
+
+      this.axios.get('/api/searchList?cityId=50&kw=' + newVal, {
+        cancelToken: new this.axios.CancelToken(function (c) {
+          that.source = c
+        })
+      }).then((res) => {
+        const msg = res.data.msg
+        const movies = res.data.data.movies
+        if (msg && movies) {
+          this.movieList = res.data.data.movies.list
+        }
+      }).catch((err) => {
+        if (this.axios.isCancel(err)) {
+          console.log('Request canceled', err.message)
+        } else {
+          console.log(err)
+        }
+      })
+    }
+  }
 }
 </script>
 
