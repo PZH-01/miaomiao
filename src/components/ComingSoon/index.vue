@@ -1,13 +1,12 @@
 <template>
     <div class="movie_body">
         <ul>
-            <li>
-                <div class="pic_show"><img src="images/movie_1.jpg"></div>
+            <li v-for="data in movieList" :key="data.filmId">
+                <div class="pic_show"><img :src="data.poster"></div>
                 <div class="info_list">
-                    <h2>无名之辈</h2>
-                    <p><span class="person">17746</span> 人想看</p>
-                    <p>主演: 陈建斌,任素汐,潘斌龙</p>
-                    <p>2018-11-30上映</p>
+                    <h2>{{data.name}}</h2>
+                    <p><span class="person">{{data.premiereAt}}</span> 人想看</p>
+                    <p>主演：{{data.actors | actorfilter}}</p>
                 </div>
                 <div class="btn_pre">
                     预售
@@ -19,7 +18,27 @@
 
 <script>
 export default {
-  name: 'ComingSoon'
+  name: 'ComingSoon',
+  data () {
+    return {
+      movieList: []
+    }
+  },
+  mounted () {
+    this.axios({
+      url: 'https://m.maizuo.com/gateway?cityId=330100&pageNum=1&pageSize=10&type=2&k=1843489',
+      headers: {
+        'X-Client-Info': '{"a":"3000","ch":"1002","v":"5.0.4","e":"15792436803723736645637","bc":"330100"}',
+        'X-Host': 'mall.film-ticket.film.list'
+      }
+    }).then((res) => {
+      console.log(res.data)
+      const msg = res.data.msg
+      if (msg === 'ok') {
+        this.movieList = res.data.data.films
+      }
+    })
+  }
 }
 </script>
 
