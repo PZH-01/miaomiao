@@ -1,5 +1,5 @@
 <template>
-    <div class="cinema_body">
+    <div class="cinema_body" ref="cinema_body">
         <ul>
             <li v-for="data in cinemaList" :key="data.cinemaId">
                 <div>
@@ -21,6 +21,7 @@
 
 <script>
 import Vue from 'vue'
+import BScroll from 'better-scroll'
 Vue.filter('Price', (lowPrice) => {
   return lowPrice.toString().slice(0, 2) + '.' + lowPrice.toString().slice(2, 4)
 })
@@ -43,6 +44,9 @@ export default {
       const msg = res.data.msg
       if (msg === 'ok') {
         this.cinemaList = res.data.data.cinemas
+        this.$nextTick(() => {
+          BScroll(this.$refs.cinema_body, {})
+        })
       }
     })
   }
