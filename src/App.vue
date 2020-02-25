@@ -11,13 +11,8 @@ export default {
 </script>
 
 <style lang="scss">
-    *{
-        margin: 0;padding: 0
-    }
-    html{
-        height: 100%
-    }
-    li{
-        list-style-type: none;
-    }
+*{ margin : 0; padding : 0;}
+ul,li{ list-style: none;}
+html,body{ height:100%;}
+.clearfix:after{ content:""; display: block; clear:both;}
 </style>
