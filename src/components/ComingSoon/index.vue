@@ -4,9 +4,9 @@
         <Scroller v-else>
             <ul>
               <li v-for="data in movieList" :key="data.filmId">
-                  <div class="pic_show"><img :src="data.poster"></div>
+                  <div class="pic_show" @tap="handleToDetail(data.filmId)"><img :src="data.poster"></div>
                   <div class="info_list">
-                      <h2>{{data.name}}</h2>
+                      <h2 @tap="handleToDetail(data.filmId)">{{data.name}}</h2>
                       <p><span class="person">{{data.premiereAt}}</span> 人想看</p>
                       <p>主演：{{data.actors | actorfilter}}</p>
                   </div>
@@ -49,6 +49,11 @@ export default {
         this.prevCityId = cityId
       }
     })
+  },
+  methods: {
+    handleToDetail (movieId) {
+      this.$router.push('/movie/detail/2/' + movieId)
+    }
   }
 }
 </script>
