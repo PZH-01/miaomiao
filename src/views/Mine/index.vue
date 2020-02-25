@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="main">
       <Header title="我的喵喵"/>
         <div id="content">
           <Login />
@@ -25,5 +25,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  #main{ height: 100%; display: flex; flex-direction:column;}
+  #content{ flex:1; overflow:auto; margin-bottom: 50px; position: relative; display: flex; flex-direction:column;}
 </style>

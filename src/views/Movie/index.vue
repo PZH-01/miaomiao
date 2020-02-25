@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div id="main">
       <Header title="喵喵电影"/>
         <div id="content">
           <div class="movie_menu">
             <router-link tag="div" to="/movie/city" class="city_name">
-              <span>杭州</span><img src="../../../public/jiantou.svg">
+              <span>{{$store.state.city.name}}</span><img src="../../../public/jiantou.svg">
             </router-link>
             <div class="hot_swtich">
               <router-link tag="div" to="/movie/nowplaying" class="hot_item">正在热映</router-link>
@@ -27,17 +27,44 @@
 import Header from '@/components/Header'
 import TabBar from '@/components/TabBar'
 
+import { messageBox } from '@/components/JS'
+
 export default {
   name: 'Movie',
   components: {
     Header,
     TabBar
+  },
+  mounted () {
+    setTimeout(() => {
+      this.axios.get('/api/getLocation').then((res) => {
+        const msg = res.data.msg
+        if (msg === 'ok') {
+          const name = res.data.data.name
+          const id = res.data.data.id
+
+          messageBox({
+            title: '定位',
+            content: name,
+            cancel: '取消',
+            ok: '切换定位',
+            handleOk () {
+              window.localStorage.setItem('nowNm', name)
+              window.localStorage.setItem('nowId', id)
+              window.location.reload()
+            }
+          })
+        }
+      })
+    }, 3000)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  #content .movie_menu{ width: 100%; height: 45px; border-bottom:1px solid #e6e6e6; display: flex; justify-content:space-between; align-items:center; background:white; z-index:10;}
+  #main{ height: 100%; display: flex; flex-direction:column;}
+  #content{ flex:1; overflow:auto; margin-bottom: 50px; position: relative; display: flex; flex-direction:column;}
+  #content .movie_menu{ width: 100%; height: 45px; border-bottom:1px solid #e6e6e6; display: flex; justify-content:space-between; align-items:center; background:white; z-index:10;}  .movie_menu{ width: 100%; border-bottom:1px solid #e6e6e6; display: flex; justify-content:space-between; align-items:center; background:white; z-index:10;}
   .movie_menu .city_name{ margin-left: 20px; height:100%; line-height: 45px;}
   .movie_menu .city_name img{ width: 10px; height:10px;}
   .movie_menu .city_name.active{ color: #ef4238; border-bottom: 2px #ef4238 solid;}
